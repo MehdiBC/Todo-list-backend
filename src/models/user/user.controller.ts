@@ -39,7 +39,9 @@ export class UserController {
   }
 
   @Delete(':userId')
-  async remove(@Param('userId') id: string): Promise<DeleteResult> {
-    return await this.userService.remove(+id);
+  async remove(
+    @Param('userId', ParseIntPipe) id: number,
+  ): Promise<DeleteResult> {
+    return await this.userService.remove(id);
   }
 }

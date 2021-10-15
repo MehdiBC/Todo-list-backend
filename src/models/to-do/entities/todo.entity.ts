@@ -1,5 +1,4 @@
 import { TodoStatusEnum } from './todo-status.enum';
-import { v4 as uuid } from 'uuid';
 import {
   Column,
   CreateDateColumn,
@@ -12,10 +11,9 @@ import { User } from '../../user/entities/user.entity';
 @Entity('todos')
 export class Todo {
   @PrimaryGeneratedColumn('uuid')
-  id: string = uuid();
+  id: string;
   @Column({
     length: 16,
-    unique: true,
   })
   name: string;
   @Column({
@@ -32,6 +30,8 @@ export class Todo {
     default: TodoStatusEnum.waiting,
   })
   status: TodoStatusEnum;
-  @ManyToOne(() => User, (user) => user.todos)
+  @ManyToOne(() => User, (user) => user.todos, {
+    onDelete: 'CASCADE',
+  })
   user: User;
 }
