@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   ParseIntPipe,
   Patch,
@@ -26,7 +27,11 @@ export class UserController {
 
   @Get(':userId')
   async findOne(@Param('userId', ParseIntPipe) id: number): Promise<User> {
-    return await this.userService.findOne(id);
+    const userInDb = await this.userService.findOne(id);
+    if (!userInDb) {
+      throw new NotFoundException(`User with id=${id} does not exist`);
+    }
+    return userInDb;
   }
 
   @Roles(Role.User)
