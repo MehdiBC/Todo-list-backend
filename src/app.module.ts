@@ -18,6 +18,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { RolesGuard } from './authorisation/RolesGuard';
 import { ConfigModule } from '@nestjs/config';
 import { JwtAuthGuard } from './authentication/guards/jwt.auth.guard';
+import { MailingModule } from './mailing/mailing.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { JwtAuthGuard } from './authentication/guards/jwt.auth.guard';
     }),
     AuthModule,
     AuthorisationModule,
+    MailingModule,
   ],
   controllers: [AppController],
   providers: [
