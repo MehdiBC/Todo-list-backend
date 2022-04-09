@@ -5,7 +5,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Role } from '../../../enum/role.enum';
+import { Role } from '../enumerations/role.enum';
 import * as bcrypt from 'bcrypt';
 import { Exclude } from 'class-transformer';
 import { Todo } from '../../to-do/entities/todo.entity';

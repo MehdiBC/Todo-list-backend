@@ -1,14 +1,21 @@
 import { ConfigService } from '@nestjs/config';
 
-export default (configService: ConfigService) => ({
+export default (configService: ConfigService = null) => ({
+  configOptions: {
+    ignoreEnvFile: true,
+  },
   database: {
     type: 'postgres' as const,
-    host: configService.get('DB_HOST', '127.0.0.1'),
-    port: configService.get<number>('DB_PORT', 5432),
-    username: configService.get('DB_USER', 'postgres'),
-    password: configService.get('DB_PASSWORD'),
-    database: configService.get('DB_NAME', 'endorsebase'),
-    synchronize: true,
-    autoLoadEntities: true,
+    host: configService.get<string>('DB_HOST'),
+    port: configService.get<number>('DB_PORT'),
+    username: configService.get<string>('DB_USER'),
+    password: configService.get<string>('DB_PASS'),
+    database: configService.get<string>('DB_NAME'),
+    entities: ['dist/**/*.entity{.ts,.js}'],
+    migrations: ['migration/*.js'],
+    cli: {
+      migrationsDir: 'migration',
+    },
+    ssl: true,
   },
 });

@@ -12,7 +12,7 @@ import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { DeleteResult } from 'typeorm';
-import { Role } from '../../enum/role.enum';
+import { Role } from './enumerations/role.enum';
 import { Roles } from '../../authorisation/role.decorator';
 
 @Roles(Role.Admin)
