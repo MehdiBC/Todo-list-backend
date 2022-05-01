@@ -1,9 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 
-export default (configService: ConfigService = null) => ({
-  configOptions: {
-    envFilePath: 'common.env',
-  },
+export default (configService: ConfigService) => ({
   database: {
     type: 'sqlite' as const,
     database: 'db',

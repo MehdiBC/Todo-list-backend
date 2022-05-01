@@ -15,7 +15,7 @@ import { DeleteResult } from 'typeorm';
 import { Role } from './enumerations/role.enum';
 import { Roles } from '../../authorisation/role.decorator';
 
-@Roles(Role.Admin)
+@Roles(Role.ADMIN)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -25,8 +25,8 @@ export class UserController {
     return await this.userService.findAll();
   }
 
-  @Get(':userId')
-  async findOne(@Param('userId', ParseIntPipe) id: number): Promise<User> {
+  @Get(':id')
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<User> {
     const userInDb = await this.userService.findOne(id);
     if (!userInDb) {
       throw new NotFoundException(`User with id=${id} does not exist`);
@@ -34,19 +34,17 @@ export class UserController {
     return userInDb;
   }
 
-  @Roles(Role.User)
-  @Patch(':userId')
+  @Roles(Role.USER)
+  @Patch(':id')
   async update(
-    @Param('userId') id: string,
+    @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto,
   ): Promise<User> {
     return await this.userService.update(+id, updateUserDto);
   }
 
-  @Delete(':userId')
-  async remove(
-    @Param('userId', ParseIntPipe) id: number,
-  ): Promise<DeleteResult> {
+  @Delete(':id')
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
     return await this.userService.remove(id);
   }
 }

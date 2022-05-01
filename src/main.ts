@@ -6,6 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 import devConfiguration from './configuration/dev.configuration';
 import testConfiguration from './configuration/test.configuration';
 import prodConfiguration from './configuration/prod.configuration';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -23,17 +24,15 @@ async function bootstrap() {
 }
 
 // Configuration setup for development, production or test
-export let configuration;
-switch (process.env.NODE_ENV) {
-  case 'development':
-    configuration = devConfiguration;
-    break;
-  case 'test':
-    configuration = testConfiguration;
-    break;
-  default:
-    configuration = prodConfiguration;
-    break;
-}
+export const configuration = (configService: ConfigService) => {
+  switch (process.env.NODE_ENV) {
+    case 'development':
+      return devConfiguration(configService);
+    case 'staging':
+      return testConfiguration(configService);
+    default:
+      return prodConfiguration(configService);
+  }
+};
 
 bootstrap().catch((error) => console.log(error));

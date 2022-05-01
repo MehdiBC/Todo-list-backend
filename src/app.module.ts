@@ -10,7 +10,7 @@ import { AuthModule } from './authentication/auth.module';
 import { AuthorisationModule } from './authorisation/authorisation.module';
 // Guards, Interceptors
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { RolesGuard } from './authorisation/RolesGuard';
+import { RolesGuard } from './authorisation/roles.guard';
 import { JwtAuthGuard } from './authentication/guards/jwt.auth.guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 // Middlewares
@@ -21,12 +21,33 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configuration } from './main';
 // Models
 import { UserModule } from './model/user/user.module';
+import { TaskModule } from './model/task/task.module';
+
+let configOptions: any;
+
+switch (process.env.NODE_ENV) {
+  case 'development':
+    configOptions = {
+      envFilePath: ['environment/development.env', 'environment/common.env'],
+      ignoreEnvFile: false,
+    };
+    break;
+  case 'staging':
+    configOptions = {
+      envFilePath: ['environment/common.env'],
+      ignoreEnvFile: false,
+    };
+    break;
+  default:
+    configOptions = { ignoreEnvFile: true };
+    break;
+}
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      ...configuration().configOptions,
+      ...configOptions,
     }),
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
@@ -34,6 +55,7 @@ import { UserModule } from './model/user/user.module';
         configuration(configService).database,
     }),
     UserModule,
+    TaskModule,
     ThrottlerModule.forRootAsync({
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
@@ -65,6 +87,7 @@ import { UserModule } from './model/user/user.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
+    MorganMiddleware.configure('dev');
     consumer.apply(MorganMiddleware).forRoutes('**');
     consumer.apply(HelmetMiddleware).forRoutes('**');
   }

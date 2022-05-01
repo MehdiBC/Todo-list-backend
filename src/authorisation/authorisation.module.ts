@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RolesGuard } from './RolesGuard';
+import { RolesGuard } from './roles.guard';
 
 @Module({
   providers: [RolesGuard],

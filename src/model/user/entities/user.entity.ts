@@ -5,10 +5,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
 import { Role } from '../enumerations/role.enum';
 import * as bcrypt from 'bcrypt';
-import { Exclude } from 'class-transformer';
-import { Todo } from '../../to-do/entities/todo.entity';
+import { Task } from '../../task/entities/task.entity';
 
 @Entity('users')
 export class User {
@@ -19,29 +19,21 @@ export class User {
     unique: true,
   })
   email: string;
-  @Column({
-    nullable: false,
-  })
+  @Column({ nullable: false })
   @Exclude()
   password: string;
   @Column({
+    enum: Role,
+    default: Role.USER,
     nullable: false,
   })
   role: Role;
-  @Column({
-    nullable: false,
-  })
-  @Exclude()
-  salt: string;
-  @OneToMany(() => Todo, (todo) => todo.user, {
-    cascade: true,
-  })
-  todos: Todo[];
+  @OneToMany(() => Task, (task) => task.users, { cascade: true })
+  tasks: Task[];
 
   @BeforeInsert()
   private async hashPassword(): Promise<void> {
-    this.salt = await bcrypt.genSalt(10);
-    if (this.password)
-      this.password = await bcrypt.hash(this.password, this.salt);
+    const salt = await bcrypt.genSalt(10);
+    if (this.password) this.password = await bcrypt.hash(this.password, salt);
   }
 }

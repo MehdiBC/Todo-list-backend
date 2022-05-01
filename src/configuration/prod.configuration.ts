@@ -1,9 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 
-export default (configService: ConfigService = null) => ({
-  configOptions: {
-    ignoreEnvFile: true,
-  },
+export default (configService: ConfigService) => ({
   database: {
     type: 'postgres' as const,
     host: configService.get<string>('DB_HOST'),
