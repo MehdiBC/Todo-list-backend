@@ -1,9 +1,15 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteResult, Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
+import { DatabaseConstraint } from '../database.constraint';
 
 @Injectable()
 export class UserService {
@@ -17,9 +23,16 @@ export class UserService {
     try {
       return await this.userRepository.save(newUser);
     } catch (error) {
-      console.log(error);
-      throw new ConflictException(
-        `user with email: ${createUserDto.email} already exists.`,
+      if (
+        error?.constraint === DatabaseConstraint.UNIQUE_USER_EMAIL_CONSTRAINT
+      ) {
+        throw new ConflictException(
+          `user with email: ${createUserDto.email} already exists.`,
+        );
+      }
+      throw new HttpException(
+        'Something went wrong',
+        HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
   }

@@ -4,20 +4,20 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Role } from '../enumerations/role.enum';
 import * as bcrypt from 'bcrypt';
 import { Task } from '../../task/entities/task.entity';
+import { DatabaseConstraint } from '../../database.constraint';
 
 @Entity('users')
+@Unique(DatabaseConstraint.UNIQUE_USER_EMAIL_CONSTRAINT, ['email'])
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({
-    nullable: false,
-    unique: true,
-  })
+  @Column({ nullable: false })
   email: string;
   @Column({ nullable: false })
   @Exclude()
