@@ -1,8 +1,10 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { User } from '../../user/entities/user.entity';
-import { Status } from '../enumerations/Status';
+import { Status } from '../enumerations/status.enum';
+import { DatabaseConstraint } from '../../database.constraint';
 
 @Entity('tasks')
+@Unique(DatabaseConstraint.UNIQUE_TASK_NAME_CONSTRAINT, ['name'])
 export class Task {
   @PrimaryGeneratedColumn()
   id: number;
@@ -16,6 +18,7 @@ export class Task {
     nullable: false,
   })
   status: Status;
-  @OneToMany(() => User, (user) => user.tasks)
-  users: User[];
+  @ManyToOne(() => User)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
 }

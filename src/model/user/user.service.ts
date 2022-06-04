@@ -1,9 +1,4 @@
-import {
-  ConflictException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-} from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteResult, Repository } from 'typeorm';
@@ -16,37 +11,36 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) {
+  }
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const newUser = this.userRepository.create(createUserDto);
-    try {
-      return await this.userRepository.save(newUser);
-    } catch (error) {
+    return this.userRepository.save(newUser).catch((error) => {
       if (
         error?.constraint === DatabaseConstraint.UNIQUE_USER_EMAIL_CONSTRAINT
       ) {
         throw new ConflictException(
-          `user with email: ${createUserDto.email} already exists.`,
+          `User with email: ${createUserDto.email} already exists.`,
         );
       }
       throw new HttpException(
         'Something went wrong',
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
-    }
+    });
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+    return this.userRepository.find();
   }
 
   async findOne(id: number): Promise<User> {
-    return await this.userRepository.findOne({ id });
+    return this.userRepository.findOne({ id });
   }
 
   async findOneByEmail(email: string): Promise<User> {
-    return await this.userRepository.findOne({ email });
+    return this.userRepository.findOne({ email });
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
@@ -54,10 +48,22 @@ export class UserService {
       id,
       ...updateUserDto,
     });
-    return await this.userRepository.save(updateUser);
+    return this.userRepository.save(updateUser).catch((error) => {
+      if (
+        error?.constraint === DatabaseConstraint.UNIQUE_USER_EMAIL_CONSTRAINT
+      ) {
+        throw new ConflictException(
+          `An other user with email: ${updateUser.email} exists.`,
+        );
+      }
+      throw new HttpException(
+        'Something went wrong',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    });
   }
 
   async remove(id: number): Promise<DeleteResult> {
-    return await this.userRepository.delete(id);
+    return this.userRepository.delete(id);
   }
 }

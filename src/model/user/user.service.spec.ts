@@ -12,7 +12,7 @@ describe('UserService', () => {
   const createUserDto = {
     email: 'mehdi.benchikha@gmail.com',
     password: 'lol',
-    role: Role.User,
+    role: Role.USER,
   };
 
   const mockUserRepository = {
@@ -54,14 +54,14 @@ describe('UserService', () => {
     expect(service).toBeDefined();
   });
 
-  it('should create a new user', async function () {
+  it('should create a new user', async function() {
     expect(await service.create(createUserDto)).toEqual({
       id: expect.any(Number),
       ...createUserDto,
     });
   });
 
-  it('should find a user by email if exists', async function () {
+  it('should find a user by email if exists', async function() {
     expect(await service.findOneByEmail(createUserDto.email)).toEqual({
       id: expect.any(Number),
       ...createUserDto,

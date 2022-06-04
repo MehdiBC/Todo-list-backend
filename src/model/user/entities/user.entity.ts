@@ -1,15 +1,7 @@
-import {
-  BeforeInsert,
-  Column,
-  Entity,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  Unique,
-} from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Role } from '../enumerations/role.enum';
 import * as bcrypt from 'bcrypt';
-import { Task } from '../../task/entities/task.entity';
 import { DatabaseConstraint } from '../../database.constraint';
 
 @Entity('users')
@@ -28,8 +20,6 @@ export class User {
     nullable: false,
   })
   role: Role;
-  @OneToMany(() => Task, (task) => task.users, { cascade: true })
-  tasks: Task[];
 
   @BeforeInsert()
   private async hashPassword(): Promise<void> {

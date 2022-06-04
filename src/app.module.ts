@@ -1,17 +1,10 @@
-import {
-  ClassSerializerInterceptor,
-  MiddlewareConsumer,
-  Module,
-  NestModule,
-} from '@nestjs/common';
+import { ClassSerializerInterceptor, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 // Authentication, Authorisation
 import { AuthModule } from './authentication/auth.module';
 import { AuthorisationModule } from './authorisation/authorisation.module';
 // Guards, Interceptors
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
-import { RolesGuard } from './authorisation/roles.guard';
-import { JwtAuthGuard } from './authentication/guards/jwt.auth.guard';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 // Middlewares
 import { MorganMiddleware } from '@nest-middlewares/morgan';
@@ -71,14 +64,14 @@ switch (process.env.NODE_ENV) {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
     },
-    {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    },
+    /* {
+       provide: APP_GUARD,
+       useClass: JwtAuthGuard,
+     },
+     {
+       provide: APP_GUARD,
+       useClass: RolesGuard,
+     },*/
     {
       provide: APP_INTERCEPTOR,
       useClass: ClassSerializerInterceptor,
