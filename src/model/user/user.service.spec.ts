@@ -24,7 +24,8 @@ describe('UserService', () => {
       save: jest.fn().mockResolvedValue({ id: 1, ...userDto } as User),
       findOne: jest.fn().mockResolvedValue({ id: 1, ...userDto } as User),
       find: jest.fn().mockResolvedValue([{ id: 1, ...userDto }] as User[]),
-      preload: jest.fn().mockResolvedValue([{ id: 1, ...userDto }]),
+      preload: jest.fn().mockResolvedValue({ id: 1, ...userDto } as User),
+      delete: jest.fn().mockResolvedValue({ affected: 1 }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -78,24 +79,22 @@ describe('UserService', () => {
         }
       });
     });
-    describe('and the user email is not updated', () => {
-    });
-    describe('and the user email doesn\'t exist in the database', () => {
-      it('should create a new user', async function() {
-        expect(await service.create(userDto)).toEqual({ id: 1, ...userDto });
-      });
-    });
-    describe('and the user email exists in the database', () => {
+    describe('and an other user has the email to update with', () => {
       beforeEach(() => {
         const error = { constraint: DatabaseConstraint.UNIQUE_USER_EMAIL_CONSTRAINT };
         mockUserRepository.save = jest.fn().mockRejectedValue(error);
       });
       it('should throw a conflict exception', async function() {
         try {
-          await service.create(userDto);
+          await service.update(1, userDto);
         } catch (e) {
-          expect(e).toEqual(new ConflictException(`User with email: ${userDto.email} already exists.`));
+          expect(e).toEqual(new ConflictException(`An other user with email: ${userDto.email} exists.`));
         }
+      });
+    });
+    describe('and the user email is not updated or the email to update with doesn\'t exist in the database', () => {
+      it('should update the user', async function() {
+        expect(await service.update(1, userDto)).toEqual({ id: 1, ...userDto });
       });
     });
   });
@@ -135,6 +134,26 @@ describe('UserService', () => {
       });
       it('should return null', async function() {
         expect(await service.findOneByEmail(userDto.email)).toEqual(null);
+      });
+    });
+  });
+
+  describe('when removing a user by id', () => {
+    describe('and the user id doesn\'t exist in the database', () => {
+      it('should remove exactly one user', async function() {
+        expect(await service.remove(1)).toMatchObject({ affected: 1 });
+      });
+    });
+    describe('and the user id doesn\'t exist in the database', () => {
+      beforeEach(() => {
+        mockUserRepository.delete = jest.fn().mockResolvedValue({ affected: 0 });
+      });
+      it('should throw a bad request exception', async function() {
+        try {
+          await service.remove(1);
+        } catch (e) {
+          expect(e).toEqual(new BadRequestException(`User with id: 1 doesn't exist.`));
+        }
       });
     });
   });
