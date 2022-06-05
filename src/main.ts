@@ -4,7 +4,6 @@ import { ValidationPipe } from '@nestjs/common';
 
 // Configuration variables
 import devConfiguration from './configuration/dev.configuration';
-import testConfiguration from './configuration/test.configuration';
 import prodConfiguration from './configuration/prod.configuration';
 import { ConfigService } from '@nestjs/config';
 
@@ -24,15 +23,7 @@ async function bootstrap() {
 }
 
 // Configuration setup for development, production or test
-export const configuration = (configService: ConfigService) => {
-  switch (process.env.NODE_ENV) {
-    case 'development':
-      return devConfiguration(configService);
-    case 'staging':
-      return testConfiguration(configService);
-    default:
-      return prodConfiguration(configService);
-  }
-};
+export const configuration = (configService: ConfigService) =>
+  process.env.NODE_ENV === 'development' ? devConfiguration(configService) : prodConfiguration(configService);
 
 bootstrap().catch((error) => console.log(error));

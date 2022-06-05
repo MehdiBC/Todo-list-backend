@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { DeleteResult, Repository } from 'typeorm';
@@ -44,23 +44,23 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const updateUser = await this.userRepository.preload({
-      id,
-      ...updateUserDto,
-    });
-    return this.userRepository.save(updateUser).catch((error) => {
-      if (
-        error?.constraint === DatabaseConstraint.UNIQUE_USER_EMAIL_CONSTRAINT
-      ) {
-        throw new ConflictException(
-          `An other user with email: ${updateUser.email} exists.`,
+    try {
+      const updateUser = await this.userRepository.preload({ id, ...updateUserDto });
+      return this.userRepository.save(updateUser).catch((error) => {
+        if (
+          error?.constraint === DatabaseConstraint.UNIQUE_USER_EMAIL_CONSTRAINT
+        ) {
+          throw new ConflictException(`An other user with email: ${updateUser.email} exists.`);
+        }
+        throw new HttpException(
+          'Something went wrong',
+          HttpStatus.INTERNAL_SERVER_ERROR,
         );
-      }
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    });
+      });
+    } catch (error) {
+      throw new BadRequestException(`User with id: ${id} doesn't exist.`);
+    }
+
   }
 
   async remove(id: number): Promise<DeleteResult> {
