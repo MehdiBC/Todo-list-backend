@@ -44,8 +44,8 @@ export class UserService {
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    try {
-      const updateUser = await this.userRepository.preload({ id, ...updateUserDto });
+    const updateUser = await this.userRepository.preload({ id, ...updateUserDto });
+    if (updateUser) {
       return this.userRepository.save(updateUser).catch((error) => {
         if (
           error?.constraint === DatabaseConstraint.UNIQUE_USER_EMAIL_CONSTRAINT
@@ -57,10 +57,8 @@ export class UserService {
           HttpStatus.INTERNAL_SERVER_ERROR,
         );
       });
-    } catch (error) {
-      throw new BadRequestException(`User with id: ${id} doesn't exist.`);
     }
-
+    throw new BadRequestException(`User with id: ${id} doesn't exist.`);
   }
 
   async remove(id: number): Promise<DeleteResult> {

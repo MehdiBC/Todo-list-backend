@@ -1,32 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserService } from './user.service';
-import { Role } from './enumerations/role.enum';
-import { User } from './entities/user.entity';
-import { faker } from '@faker-js/faker';
+import { UserService } from '../user.service';
+import { User } from '../entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { DatabaseConstraint } from '../database.constraint';
+import { DatabaseConstraint } from '../../database.constraint';
 import { BadRequestException, ConflictException } from '@nestjs/common';
+import { mockedUser } from './__mocks__/mocked-user';
+import { getMockUserRepository } from './__mocks__/get-mock-user-repository';
 
 describe('UserService', () => {
   let service: UserService;
-  let userDto;
   let mockUserRepository;
+  let userData;
 
   beforeEach(async () => {
-    userDto = {
-      email: faker.internet.email(),
-      password: faker.internet.password(8),
-      role: Role.USER,
-    };
-
-    mockUserRepository = {
-      create: jest.fn().mockReturnValue(userDto as User),
-      save: jest.fn().mockResolvedValue({ id: 1, ...userDto } as User),
-      findOne: jest.fn().mockResolvedValue({ id: 1, ...userDto } as User),
-      find: jest.fn().mockResolvedValue([{ id: 1, ...userDto }] as User[]),
-      preload: jest.fn().mockResolvedValue({ id: 1, ...userDto } as User),
-      delete: jest.fn().mockResolvedValue({ affected: 1 }),
-    };
+    userData = { ...mockedUser };
+    mockUserRepository = getMockUserRepository();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -48,7 +36,7 @@ describe('UserService', () => {
   describe('when creating a user', () => {
     describe('and the user email doesn\'t exist in the database', () => {
       it('should create a new user', async function() {
-        expect(await service.create(userDto)).toEqual({ id: 1, ...userDto });
+        expect(await service.create(userData)).toEqual({ id: 1, ...userData });
       });
     });
     describe('and the user email exists in the database', () => {
@@ -58,9 +46,9 @@ describe('UserService', () => {
       });
       it('should throw a conflict exception', async function() {
         try {
-          await service.create(userDto);
+          await service.create(userData);
         } catch (e) {
-          expect(e).toEqual(new ConflictException(`User with email: ${userDto.email} already exists.`));
+          expect(e).toEqual(new ConflictException(`User with email: ${userData.email} already exists.`));
         }
       });
     });
@@ -69,11 +57,11 @@ describe('UserService', () => {
   describe('when updating a user', () => {
     describe('and the user id doesn\'t exist in the database', () => {
       beforeEach(() => {
-        mockUserRepository.preload = jest.fn().mockRejectedValue(new Error());
+        mockUserRepository.preload = jest.fn().mockResolvedValue(null);
       });
       it('should throw a bad request exception', async function() {
         try {
-          await service.update(1, userDto);
+          await service.update(1, userData);
         } catch (e) {
           expect(e).toEqual(new BadRequestException(`User with id: 1 doesn't exist.`));
         }
@@ -86,29 +74,29 @@ describe('UserService', () => {
       });
       it('should throw a conflict exception', async function() {
         try {
-          await service.update(1, userDto);
+          await service.update(1, userData);
         } catch (e) {
-          expect(e).toEqual(new ConflictException(`An other user with email: ${userDto.email} exists.`));
+          expect(e).toEqual(new ConflictException(`An other user with email: ${userData.email} exists.`));
         }
       });
     });
     describe('and the user email is not updated or the email to update with doesn\'t exist in the database', () => {
       it('should update the user', async function() {
-        expect(await service.update(1, userDto)).toEqual({ id: 1, ...userDto });
+        expect(await service.update(1, userData)).toEqual({ id: 1, ...userData });
       });
     });
   });
 
   describe('when getting all users', () => {
     it('should find all users', async function() {
-      expect(await service.findAll()).toEqual([{ id: 1, ...userDto }]);
+      expect(await service.findAll()).toEqual([{ id: 1, ...userData }]);
     });
   });
 
   describe('when getting a user by id', () => {
     describe('and the user exists in the database', () => {
       it('should find a user with that id', async function() {
-        expect(await service.findOne(1)).toEqual({ id: 1, ...userDto });
+        expect(await service.findOne(1)).toEqual({ id: 1, ...userData });
       });
     });
     describe('and the user doesn\'t exist in the database', () => {
@@ -124,8 +112,7 @@ describe('UserService', () => {
   describe('when getting a user by email', () => {
     describe('and the user exists in the database', () => {
       it('should find a user by email if exists', async function() {
-        // mockUserRepository.findOne = jest.fn().mockResolvedValue({ id: 1, ...userDto });
-        expect(await service.findOneByEmail(userDto.email)).toEqual({ id: 1, ...userDto });
+        expect(await service.findOneByEmail(userData.email)).toEqual({ id: 1, ...userData });
       });
     });
     describe('and the user doesn\'t exist in the database', () => {
@@ -133,7 +120,7 @@ describe('UserService', () => {
         mockUserRepository.findOne = jest.fn().mockResolvedValue(null);
       });
       it('should return null', async function() {
-        expect(await service.findOneByEmail(userDto.email)).toEqual(null);
+        expect(await service.findOneByEmail(userData.email)).toEqual(null);
       });
     });
   });
