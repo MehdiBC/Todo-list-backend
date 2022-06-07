@@ -18,7 +18,7 @@ describe('UserController integration with UserService', () => {
 
   beforeEach(async () => {
     userData = { ...mockedUser };
-    mockUserRepository = getMockUserRepository();
+    mockUserRepository = getMockUserRepository(userData);
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UserController],
       providers: [
@@ -122,7 +122,7 @@ describe('UserController integration with UserService', () => {
     });
     describe('and user id exists in the database', () => {
       it('should have status 200', async () => {
-        await apiClient().get('/users/1').expect(200);
+        await apiClient().delete('/users/1').expect(200);
       });
       it('should delete a user', async () => {
         expect((await apiClient().delete('/users/1')).body?.affected).toEqual(1);

@@ -1,11 +1,4 @@
-import {
-  BadRequestException,
-  ConflictException,
-  HttpException,
-  HttpStatus,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Task } from './entities/task.entity';
@@ -28,7 +21,7 @@ export class TaskService {
         error?.constraint === DatabaseConstraint.UNIQUE_TASK_NAME_CONSTRAINT
       ) {
         throw new ConflictException(
-          `Task with name: ${createTask.name} already exists.`,
+          `and other task with name: ${createTask.name} exists.`,
         );
       } else if (
         error?.constraint === DatabaseConstraint.FOREIGN_KEY_TASK_USERID_CONSTRAINT
@@ -58,7 +51,7 @@ export class TaskService {
     if (updateTask) {
       return this.taskRepository.save(updateTask).catch((error) => {
         if (error?.constraint === DatabaseConstraint.UNIQUE_TASK_NAME_CONSTRAINT) {
-          throw new ConflictException(`Task with name: ${updateTask.name} already exists.`);
+          throw new ConflictException(`An other task with name: ${updateTask.name} exists.`);
         } else if (
           error?.constraint === DatabaseConstraint.FOREIGN_KEY_TASK_USERID_CONSTRAINT
         ) {
@@ -67,7 +60,7 @@ export class TaskService {
         throw new HttpException('Something went wrong', HttpStatus.INTERNAL_SERVER_ERROR);
       });
     }
-    throw new NotFoundException(`Task with id: ${updateTask.id} doesn't exist.`);
+    throw new BadRequestException(`Task with id: ${id} doesn't exist.`);
   }
 
   remove(id: number) {

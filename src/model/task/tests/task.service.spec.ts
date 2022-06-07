@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { TaskService } from './task.service';
+import { TaskService } from '../task.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Task } from './entities/task.entity';
-import { getMockTaskRepository } from './tests/__mocks__/get-mock-task-repository';
-import { mockedTaskData } from './tests/__mocks__/mockedTaskData';
+import { Task } from '../entities/task.entity';
+import { getMockTaskRepository } from './__mocks__/get-mock-task-repository';
+import { mockedTaskData } from './__mocks__/mockedTaskData';
 import { BadRequestException, ConflictException } from '@nestjs/common';
 
 describe('TaskService', () => {
@@ -40,7 +40,7 @@ describe('TaskService', () => {
         try {
           await service.create(taskData);
         } catch (error) {
-          expect(error).toEqual(new ConflictException(`Task with name: ${taskData.name} already exists.`));
+          expect(error).toEqual(new ConflictException(`An other task with name: ${taskData.name} exists.`));
         }
       });
     });
