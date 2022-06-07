@@ -22,7 +22,7 @@ services:
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
-    command: npm run start:prod
+    command: npm run dev
 
   postgres:
     image: postgres:alpine

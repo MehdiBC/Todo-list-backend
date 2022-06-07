@@ -1,17 +1,15 @@
-FROM node:14-alpine3.14
+FROM node:14-bullseye
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY package*.json .
 
-RUN npm install glob rimraf
-
-RUN npm install --only=production
+RUN npm install
 
 COPY . .
 
-RUN npm run build
-
 EXPOSE 3000
 
-CMD [ "npm","run","start:prod" ]
+RUN npm run build
+
+CMD npm run start:prod
