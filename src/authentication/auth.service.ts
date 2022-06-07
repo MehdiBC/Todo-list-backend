@@ -11,7 +11,8 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-  ) {}
+  ) {
+  }
 
   async validateUser(email: string, password: string): Promise<LoginUserDto> {
     const userInDb = await this.userService.findOneByEmail(email);
@@ -39,6 +40,6 @@ export class AuthService {
 
   async signUp(createUserDto: CreateUserDto): Promise<TokenAuth> {
     const user = await this.userService.create(createUserDto);
-    return await this.login(user);
+    return this.login(user);
   }
 }

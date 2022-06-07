@@ -7,6 +7,7 @@ import { getMockJwtService } from './__mocks__/get-mock-jwt-service';
 import { getMockConfigService } from './__mocks__/get-mock-config-service';
 import { getMockUserService } from './__mocks__/get-mock-user-service';
 import { mockedUserLoginCredentials } from './__mocks__/mocked-user-login-credentials';
+import { Role } from '../../model/user/enumerations/role.enum';
 import * as bcrypt from 'bcrypt';
 
 describe('AuthService integration with UserService', () => {
@@ -19,8 +20,8 @@ describe('AuthService integration with UserService', () => {
   beforeEach(async () => {
     mockedJwtService = getMockJwtService();
     mockedConfigService = getMockConfigService();
-    mockedUserService = getMockUserService();
     userData = { ...mockedUserLoginCredentials };
+    mockedUserService = getMockUserService({ id: 1, ...userData, role: Role.USER });
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,

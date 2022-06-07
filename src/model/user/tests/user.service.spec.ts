@@ -14,7 +14,7 @@ describe('UserService', () => {
 
   beforeEach(async () => {
     userData = { ...mockedUser };
-    mockUserRepository = getMockUserRepository();
+    mockUserRepository = getMockUserRepository(userData);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [

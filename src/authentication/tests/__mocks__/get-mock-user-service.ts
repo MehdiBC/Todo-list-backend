@@ -1,11 +1,10 @@
 import { User } from '../../../model/user/entities/user.entity';
-import { mockedUserLoginCredentials } from './mocked-user-login-credentials';
 
-export const getMockUserService = () => ({
-  findAll: jest.fn().mockResolvedValue([mockedUserLoginCredentials] as User[]),
-  findOne: jest.fn().mockResolvedValue({ id: 1, ...mockedUserLoginCredentials }),
-  findOneByEmail: jest.fn().mockResolvedValue({ id: 1, ...mockedUserLoginCredentials }),
-  create: jest.fn().mockResolvedValue({ id: 1, ...mockedUserLoginCredentials }),
-  update: jest.fn().mockResolvedValue({ id: 1, ...mockedUserLoginCredentials }),
+export const getMockUserService = (userData: any) => ({
+  findAll: jest.fn().mockResolvedValue([{ id: 1, ...userData }] as User[]),
+  findOne: jest.fn().mockResolvedValue({ id: 1, ...userData } as User),
+  findOneByEmail: jest.fn().mockResolvedValue({ id: 1, ...userData } as User),
+  create: jest.fn().mockResolvedValue({ id: 1, ...userData } as User),
+  update: jest.fn().mockResolvedValue({ id: 1, ...userData } as User),
   remove: jest.fn().mockResolvedValue({ affected: 1 }),
 });
