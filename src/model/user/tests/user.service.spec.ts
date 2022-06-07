@@ -126,7 +126,7 @@ describe('UserService', () => {
   });
 
   describe('when removing a user by id', () => {
-    describe('and the user id doesn\'t exist in the database', () => {
+    describe('and the user id exists in the database', () => {
       it('should remove exactly one user', async function() {
         expect(await service.remove(1)).toMatchObject({ affected: 1 });
       });
