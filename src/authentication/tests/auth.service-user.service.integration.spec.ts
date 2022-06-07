@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../../model/user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { Role } from '../../model/user/enumerations/role.enum';
 
 let service: AuthService;
 let userService: UserService;
@@ -18,12 +19,16 @@ let mockedJwtService;
 let mockUserRepository;
 let userData;
 
-describe('', () => {
+describe('AuthService integration with UserService', () => {
   beforeEach(async () => {
     mockedJwtService = getMockJwtService();
     mockedConfigService = getMockConfigService();
-    mockUserRepository = getMockUserRepository();
     userData = { ...mockedUserLoginCredentials };
+    mockUserRepository = getMockUserRepository({
+      id: 1,
+      ...userData,
+      role: Role.USER,
+    });
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UserService,
@@ -82,8 +87,6 @@ describe('', () => {
           (bcrypt.compare as jest.Mock) = bcryptCompare;
         });
         it('should return a LoginUser object', async () => {
-          console.log(userData);
-          console.log(await userService.findOneByEmail(userData.email));
           expect(await service.validateUser(userData.email, userData.password)).toEqual({
             id: expect.any(Number),
             email: userData.email,
