@@ -24,7 +24,7 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/endorsebase:latest
+          tags: ${{ secrets.DOCKER_HUB_USERNAME }}/todo-app:latest
 
   Deploy:
     needs: Package
@@ -39,10 +39,10 @@ jobs:
 
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            sudo docker container stop endorsebase_app
-            sudo docker container rm endorsebase_app
-            sudo docker image rm ${{ secrets.DOCKER_HUB_USERNAME }}/endorsebase
-            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/endorsebase:latest
-            sudo docker run -d -p 80:3000 --name endorsebase_app ${{ secrets.DOCKER_HUB_USERNAME }}/endorsebase
+            ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
+            sudo docker container stop todo-app
+            sudo docker container rm todo-app
+            sudo docker image rm ${{ secrets.DOCKER_HUB_USERNAME }}/todo-app
+            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/todo-app:latest
+            sudo docker run -d -p 80:3000 --name todo-app ${{ secrets.DOCKER_HUB_USERNAME }}/todo-app
           '
