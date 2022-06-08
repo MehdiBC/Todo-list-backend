@@ -26,20 +26,16 @@ describe('UserController', () => {
     controller = module.get<UserController>(UserController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
-
   describe('when getting all users', () => {
     it('should find all users', async () => {
-      expect((await controller.findAll())).toEqual([{ id: 1, ...userData }]);
+      expect((await controller.findAll())).equal([{ id: 1, ...userData }]);
     });
   });
 
   describe('when getting user by id', () => {
     describe('and user id exists in the database', () => {
       it('should find a user with that id', async () => {
-        expect(await controller.findOne(1)).toEqual({ id: 1, ...userData });
+        expect(await controller.findOne(1)).equal({ id: 1, ...userData });
       });
     });
     describe('and user id doesn\'t exist in the database', () => {
@@ -50,7 +46,7 @@ describe('UserController', () => {
         try {
           await controller.findOne(1);
         } catch (error) {
-          expect(error).toEqual(new NotFoundException(`User with id=1 does not exist`));
+          expect(error).equal(new NotFoundException(`User with id=1 does not exist`));
         }
       });
     });
@@ -65,7 +61,7 @@ describe('UserController', () => {
         try {
           await controller.update(1, userData);
         } catch (error) {
-          expect(error).toEqual(new NotFoundException(`User with id=1 does not exist`));
+          expect(error).equal(new NotFoundException(`User with id=1 does not exist`));
         }
       });
     });
@@ -77,13 +73,13 @@ describe('UserController', () => {
         try {
           await controller.update(1, userData);
         } catch (error) {
-          expect(error).toEqual(new ConflictException(`An other user with email: ${userData.email} exists.`));
+          expect(error).equal(new ConflictException(`An other user with email: ${userData.email} exists.`));
         }
       });
     });
     describe('and the user email is not updated or the email to update with doesn\'t exist in the database', () => {
       it('should update the user', async function() {
-        expect(await controller.update(1, userData)).toEqual({ id: 1, ...userData });
+        expect(await controller.update(1, userData)).equal({ id: 1, ...userData });
       });
     });
   });
@@ -97,13 +93,13 @@ describe('UserController', () => {
         try {
           await controller.remove(1);
         } catch (error) {
-          expect(error).toEqual(new NotFoundException(`User with id=1 does not exist`));
+          expect(error).equal(new NotFoundException(`User with id=1 does not exist`));
         }
       });
     });
     describe('and user id exists in the database', () => {
       it('should delete a user', async () => {
-        expect((await controller.remove(1)).affected).toEqual(1);
+        expect((await controller.remove(1)).affected).equal(1);
       });
     });
   });
