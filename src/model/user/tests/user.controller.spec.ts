@@ -4,6 +4,7 @@ import { UserService } from '../user.service';
 import { getMockUserService } from '../../../authentication/tests/__mocks__/get-mock-user-service';
 import { ConflictException, NotFoundException } from '@nestjs/common';
 import { mockedUser } from './__mocks__/mocked-user';
+import { expect } from '@jest/globals';
 
 describe('UserController', () => {
   let controller: UserController;
@@ -28,14 +29,14 @@ describe('UserController', () => {
 
   describe('when getting all users', () => {
     it('should find all users', async () => {
-      expect((await controller.findAll())).equal([{ id: 1, ...userData }]);
+      expect((await controller.findAll())).toEqual([{ id: 1, ...userData }]);
     });
   });
 
   describe('when getting user by id', () => {
     describe('and user id exists in the database', () => {
       it('should find a user with that id', async () => {
-        expect(await controller.findOne(1)).equal({ id: 1, ...userData });
+        expect(await controller.findOne(1)).toEqual({ id: 1, ...userData });
       });
     });
     describe('and user id doesn\'t exist in the database', () => {
@@ -46,7 +47,7 @@ describe('UserController', () => {
         try {
           await controller.findOne(1);
         } catch (error) {
-          expect(error).equal(new NotFoundException(`User with id=1 does not exist`));
+          expect(error).toEqual(new NotFoundException(`User with id=1 does not exist`));
         }
       });
     });
@@ -61,7 +62,7 @@ describe('UserController', () => {
         try {
           await controller.update(1, userData);
         } catch (error) {
-          expect(error).equal(new NotFoundException(`User with id=1 does not exist`));
+          expect(error).toEqual(new NotFoundException(`User with id=1 does not exist`));
         }
       });
     });
@@ -73,13 +74,13 @@ describe('UserController', () => {
         try {
           await controller.update(1, userData);
         } catch (error) {
-          expect(error).equal(new ConflictException(`An other user with email: ${userData.email} exists.`));
+          expect(error).toEqual(new ConflictException(`An other user with email: ${userData.email} exists.`));
         }
       });
     });
     describe('and the user email is not updated or the email to update with doesn\'t exist in the database', () => {
       it('should update the user', async function() {
-        expect(await controller.update(1, userData)).equal({ id: 1, ...userData });
+        expect(await controller.update(1, userData)).toEqual({ id: 1, ...userData });
       });
     });
   });
@@ -93,13 +94,13 @@ describe('UserController', () => {
         try {
           await controller.remove(1);
         } catch (error) {
-          expect(error).equal(new NotFoundException(`User with id=1 does not exist`));
+          expect(error).toEqual(new NotFoundException(`User with id=1 does not exist`));
         }
       });
     });
     describe('and user id exists in the database', () => {
       it('should delete a user', async () => {
-        expect((await controller.remove(1)).affected).equal(1);
+        expect((await controller.remove(1)).affected).toEqual(1);
       });
     });
   });

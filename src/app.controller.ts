@@ -5,5 +5,4 @@ export class AppController {
   public hello(): string {
     return 'Hello Todo';
   }
-
 }
