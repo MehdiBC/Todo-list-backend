@@ -8,6 +8,7 @@ import { User } from '../entities/user.entity';
 import { mockedUser } from './__mocks__/mocked-user';
 import { getMockUserRepository } from './__mocks__/get-mock-user-repository';
 import { DatabaseConstraint } from '../../database.constraint';
+import { expect } from '@jest/globals';
 
 describe('UserController integration with UserService', () => {
   let app: INestApplication;
