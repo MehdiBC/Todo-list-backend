@@ -63,7 +63,7 @@ or select the file test
    npm run test -- testfile.spec.ts
    ```
 
-![image](![img.png](img.png))
+![img.png](img.png)
 
 Unit test and integration test scripts are under every module (user | task) under tests directory
 
@@ -75,7 +75,7 @@ We need to run the application before the end to end testing
    npm run cypress:open
    ```
 
-![image](![img_1.png](img_1.png))
+![img_1.png](img_1.png)
 
 ### User acceptance test
 
