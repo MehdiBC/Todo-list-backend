@@ -85,6 +85,7 @@ Link: [a link] (https://github.com/MehdiBC/Todo-list-backend/blob/master/documen
 ## CI/CD pipeline
 
 The project pipeline code can be found under `.github/workflows` and its structure is as follows
+![img_2.png](img_2.png)
 
 ### Third phase
 
