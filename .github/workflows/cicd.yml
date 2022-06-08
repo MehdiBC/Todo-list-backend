@@ -6,6 +6,13 @@ on:
       - master
   workflow_dispatch:
 jobs:
+  Linting:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: stefanoeb/eslint-action@1.0.2
+        with:
+          files: src/
   Test:
     runs-on: ubuntu-latest
     steps:
@@ -17,6 +24,9 @@ jobs:
       - run: npm install
       - run: npm test
   Package:
+    needs:
+      - Linting
+      - Test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
