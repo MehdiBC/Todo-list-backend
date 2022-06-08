@@ -40,5 +40,9 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-            touch hello.txt
+            sudo docker container stop endorsebase_app
+            sudo docker container rm endorsebase_app
+            sudo docker image rm ${{ secrets.DOCKER_HUB_USERNAME }}/endorsebase
+            sudo docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/endorsebase:latest
+            sudo docker run -d -p 80:3000 --name endorsebase_app ${{ secrets.DOCKER_HUB_USERNAME }}/endorsebase
           '
