@@ -15,6 +15,7 @@ import { configuration } from './main';
 // Models
 import { UserModule } from './model/user/user.module';
 import { TaskModule } from './model/task/task.module';
+import { AppController } from './app.controller';
 
 let configOptions: any;
 
@@ -77,6 +78,7 @@ switch (process.env.NODE_ENV) {
       useClass: ClassSerializerInterceptor,
     },
   ],
+  controllers: [AppController],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): any {
