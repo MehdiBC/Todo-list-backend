@@ -88,12 +88,12 @@ The project pipeline code can be found under `.github/workflows` and its structu
 
 ### Third phase
 
-This part of the pipeline is **deploiement** and depends on the packaging phase. The project is deployed on
+This part of the pipeline is **deployment** and depends on the packaging phase. The project is deployed on
 an [Amazon](https://aws.amazon.com/) Ec2 instance.  
 It follows these steps:  
 1- Login to the instance via **SSH**.  
 2- Shut down the running container.  
 3- Pull the new released image.  
-4- Launch a new container via `docker run` commande with port and name of the container specification.
+4- Launch a new container via `docker run` command with port and name of the container specification.
 
 In order to access the site a **security groups** must be added with TCP on PORT 80.  

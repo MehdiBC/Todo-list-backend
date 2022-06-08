@@ -9,6 +9,8 @@ import { getMockUserService } from './__mocks__/get-mock-user-service';
 import { mockedUserLoginCredentials } from './__mocks__/mocked-user-login-credentials';
 import { Role } from '../../model/user/enumerations/role.enum';
 import * as bcrypt from 'bcrypt';
+import { expect } from '@jest/globals';
+
 
 describe('AuthService integration with UserService', () => {
   let service: AuthService;

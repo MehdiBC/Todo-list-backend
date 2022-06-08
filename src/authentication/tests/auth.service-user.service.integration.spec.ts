@@ -11,6 +11,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { User } from '../../model/user/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { Role } from '../../model/user/enumerations/role.enum';
+import { expect } from '@jest/globals';
 
 let service: AuthService;
 let userService: UserService;

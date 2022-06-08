@@ -8,6 +8,7 @@ import { mockedTaskData } from './__mocks__/mockedTaskData';
 import { TaskService } from '../task.service';
 import { Task } from '../entities/task.entity';
 import { getMockTaskRepository } from './__mocks__/get-mock-task-repository';
+import { expect } from '@jest/globals';
 
 describe('TaskController integration with TaskService', () => {
   let app: INestApplication;

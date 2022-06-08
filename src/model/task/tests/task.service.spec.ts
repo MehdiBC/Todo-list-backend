@@ -5,6 +5,7 @@ import { Task } from '../entities/task.entity';
 import { getMockTaskRepository } from './__mocks__/get-mock-task-repository';
 import { mockedTaskData } from './__mocks__/mockedTaskData';
 import { BadRequestException, ConflictException } from '@nestjs/common';
+import { expect } from '@jest/globals';
 
 describe('TaskService', () => {
   let service: TaskService;
