@@ -43,8 +43,9 @@ In order to run this project and extend its functionalities you need to follow s
 
 3. run the following docker run command:
 
-  ```
- docker pull and  mehdibc/todo-app
+ ```sh
+ docker pull  mehdibc/todo-app
+ ```
  ``` sh
  sudo docker run -d -p 3000:3000 --name todo-app mehdibc/todo-app
  ```
